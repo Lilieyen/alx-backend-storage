@@ -1,31 +1,30 @@
 #!/usr/bin/env python3
 """pyhton script that provides some stats about Nginx logs stored in MongoDB"""
-from pymongo import MongoClient
+import pymongo
 
 
-def log_stats():
+def log_stats(a: dict) -> int:
     """
-    log the statistics
+    log the statistics & connect to the default host
     """
-    client = MongoClient('mongodb://127.0.0.1:27017')
-    logs_collection = client.logs.nginx
-    total = logs_collection.count_documents({})
-    get = logs_collection.count_documents({"method": "GET"})
-    post = logs_collection.count_documents({"method": "POST"})
-    put = logs_collection.count_documents({"method": "PUT"})
-    patch = logs_collection.count_documents({"method": "PATCH"})
-    delete = logs_collection.count_documents({"method": "DELETE"})
-    path = logs_collection.count_documents(
-        {"method": "GET", "path": "/status"})
-    print(f"{total} logs")
+    connection = pymongo.MongoClient()
+    logs = connection.logs.nginx
+    return logs.count_documents(a)
+
+
+def main_function():
+    """
+    main function
+    """
+    print(f"{log_stats({})} logs")
     print("Methods:")
-    print(f"\tmethod GET: {get}")
-    print(f"\tmethod POST: {post}")
-    print(f"\tmethod PUT: {put}")
-    print(f"\tmethod PATCH: {patch}")
-    print(f"\tmethod DELETE: {delete}")
-    print(f"{path} status check")
+    print(f"\tmethod GET: {log_stats({'method': 'GET'})}")
+    print(f"\tmethod POST: {log_stats({'method': 'POST'})}")
+    print(f"\tmethod PUT: {log_stats({'method': 'PUT'})}")
+    print(f"\tmethod PATCH: {log_stats({'method': 'PATCH'})}")
+    print(f"\tmethod DELETE: {log_stats({'method': 'DELETE'})}")
+    print(f"{log_stats({'method': 'GET', 'path': '/status'})} status check")
 
 
 if __name__ == "__main__":
-    log_stats()
+    main_function()
