@@ -3,10 +3,8 @@
 from pymongo import MongoClient
 
 
-def log_stats():
-    """
-    log stats
-    """
+def nginx_stats_check():
+    """ provides some stats about Nginx logs stored in MongoDB:"""
     client = MongoClient()
     collec_nginx = client.logs.nginx
 
@@ -22,4 +20,4 @@ def log_stats():
 
 
 if __name__ == "__main__":
-    log_stats()
+    nginx_stats_check()
